@@ -3,10 +3,10 @@
   <button (click)="searchPokemon()">Search</button>
 </div>
 <ul>
-  <li *ngFor="let pokemon of pokemonList">
+  <li *ngFor="let pokemon of pokemonList()">
     <a [routerLink]="getRouterLink(pokemon.name)">{{
       pokemon.name | titlecase
-    }}</a>
+      }}</a>
   </li>
 </ul>
 <!-- TODO implement pagination -->
@@ -17,7 +17,7 @@
     <li *ngFor="let pokemon of getFavs()">
       <a [routerLink]="getRouterLink(pokemon.name)">{{
         pokemon.name | titlecase
-      }}</a>
+        }}</a>
     </li>
   </ul>
 </div>
