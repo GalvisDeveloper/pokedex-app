@@ -1,8 +1,11 @@
 <div *ngIf="pokemon">
+  <button (click)="goBack()">Go Back</button>
   <h1>{{ pokemon.name | titlecase }}</h1>
   <img [src]="pokemon.sprites.front_default" alt="{{ pokemon.name }}" />
   <p>Height: {{ pokemon.height }}</p>
   <p>Weight: {{ pokemon.weight }}</p>
   <app-pokemon-abilities [abilities]="pokemon.stats"></app-pokemon-abilities>
-  <button (click)="addFavorite()">Add to Favorites</button>
+  <button (click)="addFavorite()" [disabled]="isFavorite()">Add to Favorites</button>
+  <button (click)="removeFavorite()" [disabled]="!isFavorite()">Remove to Favorites</button>
+
 </div>

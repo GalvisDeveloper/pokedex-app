@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PokeService } from '../../services/poke.service';
 import { PokemonAbilitiesComponent } from '../pokemon-abilities/pokemon-abilities.component';
 import { CommonModule, TitleCasePipe } from '@angular/common';
@@ -16,8 +16,9 @@ export class PokemonDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private pokeService: PokeService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const name = this.route.snapshot.paramMap.get('name');
@@ -30,5 +31,20 @@ export class PokemonDetailComponent implements OnInit {
 
   addFavorite(): void {
     this.pokeService.saveFavorite(this.pokemon);
+  }
+
+  removeFavorite(): void {
+    this.pokeService.removeFavorite(this.pokemon);
+  }
+
+  goBack(): void {
+    this.router.navigate(['/']);
+  }
+
+  isFavorite(): boolean {
+    const favs = localStorage.getItem('favorites');
+    if (!favs) return false;
+    const favorites = JSON.parse(favs);
+    return favorites.some((fav: any) => fav.name === this.pokemon.name);
   }
 }

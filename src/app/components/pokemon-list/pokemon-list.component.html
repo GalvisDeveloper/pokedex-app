@@ -10,7 +10,15 @@
   </li>
 </ul>
 <!-- TODO implement pagination -->
-<button>Load More</button>
+<div>
+  <button (click)="goToPrevPage()">Prev Page</button>
+  <span *ngFor="let page of pageNumber" (click)="loadPokemon(page)">
+    {{ page + 1 }}
+  </span>
+  <button (click)="goToNextPage()">Next Page</button>
+</div>
+
+<button (click)="loadPokemon(currentPage() + 1)">Load More</button>
 <div>
   Favorites:
   <ul>

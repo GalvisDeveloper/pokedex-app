@@ -14,28 +14,34 @@ import { FormsModule } from '@angular/forms';
 export class PokemonListComponent implements OnInit {
   pokemonList = signal<any[]>([]);
   searchQuery = '';
+  currentPage = signal(0);
+  totalPages = signal(0);
+  private readonly limit = 20;
 
-  constructor(protected pokeService: PokeService) {}
+  constructor(protected pokeService: PokeService) { }
 
   ngOnInit(): void {
-    this.loadPokemon();
+    this.loadPokemon(this.currentPage());
   }
 
   protected getRouterLink(name: string): string {
-    return `/pokemon/${name}`;
+    return `/${name}`;
   }
 
-  loadPokemon(): void {
-    this.pokeService.getPokemonList().subscribe({
+  loadPokemon(page: number): void {
+    const offset = page * this.limit;
+    this.pokeService.getPokemonList(offset, this.limit).subscribe({
       next: (data) => {
-        this.pokemonList.set([...this.pokemonList(), ...data.results]);
+        this.pokemonList.set(data.results);
+        this.currentPage.set(page);
+        this.totalPages.set(Math.ceil(data.count / this.limit));
       },
       error: (err) => console.error('Failed to load Pokémon', err),
     });
   }
 
   public getFavs() {
-    const favs = localStorage.getItem('favs');
+    const favs = localStorage.getItem('favorites');
     if (!favs) return [];
     return JSON.parse(favs);
   }
@@ -51,5 +57,19 @@ export class PokemonListComponent implements OnInit {
           error: (err) => console.error('Failed to search Pokémon', err),
         });
     }
+  }
+
+  goToNextPage(): void {
+    this.loadPokemon(this.currentPage() + 1);
+  }
+
+  goToPrevPage(): void {
+    if (this.currentPage() > 0) {
+      this.loadPokemon(this.currentPage() - 1);
+    }
+  }
+
+  get pageNumber(): number[] {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
   }
 }
